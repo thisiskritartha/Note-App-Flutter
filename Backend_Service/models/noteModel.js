@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const noteSchema = new mongoose.Schema({
-  // id: {
-  //   type: String,
-  //   required: [true, 'Note must contain ID'],
-  //   unique: true,
-  // },
+  id: {
+    type: String,
+    required: [true, 'Note must contain ID'],
+    unique: true,
+  },
   email: {
     type: String,
     required: [true, 'Note must contain email'],

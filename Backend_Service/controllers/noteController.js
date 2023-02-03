@@ -54,3 +54,44 @@ exports.createNote = async (req, res, next) => {
     },
   });
 };
+
+exports.deleteOne = async (req, res, next) => {
+  const note = await Note.findByIdAndDelete(req.params.id);
+
+  if (!note) {
+    return next(
+      res.status(400).json({
+        status: 'Error',
+        message: 'No note with that id.',
+      })
+    );
+  }
+
+  res.status(200).json({
+    status: 'Success',
+    message: `Note with id: ${req.params.id} deleted successfully.`,
+  });
+};
+
+exports.update = async (req, res, next) => {
+  const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!note) {
+    return next(
+      res.status(400).json({
+        status: 'Error',
+        message: 'No Note found with that id',
+      })
+    );
+  }
+  res.status(200).json({
+    status: 'Success',
+    message: 'Note updated successfully',
+    data: {
+      note,
+    },
+  });
+};
