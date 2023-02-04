@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Note App',
+          'Note-App',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -27,67 +27,101 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(AddNewNoteScreen(), transition: Transition.downToUp);
+          Get.to(
+            AddNewNoteScreen(isUpdate: false),
+            transition: Transition.downToUp,
+          );
         },
         elevation: 30,
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SafeArea(
-        child: Obx(
-          () => GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              itemCount: controller.notes.length,
-              itemBuilder: (context, index) {
-                Note currentNote = controller.notes[index];
-                return Container(
-                  margin: const EdgeInsets.all(8),
-                  padding: const EdgeInsets.only(left: 10, top: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
+          child: Obx(
+        () => controller.notes.isNotEmpty
+            ? GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                itemCount: controller.notes.length,
+                itemBuilder: (context, index) {
+                  Note currentNote = controller.notes[index];
+                  return GestureDetector(
+                    onTap: () {
+                      //TODO: FOR UPDATE
+                      Get.to(AddNewNoteScreen(
+                        isUpdate: true,
+                        note: currentNote,
+                      ));
+                    },
+                    onLongPress: () {
+                      controller.deleteNote(currentNote);
+                      Get.snackbar(
+                        'NOTE DELETION',
+                        'Success!',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.only(left: 10, top: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 25,
+                            color: Colors.grey,
+                            offset: Offset(5, 10),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            currentNote.title!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.black.withOpacity(0.7),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            currentNote.content!,
+                            maxLines: 7,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[800],
+                              decoration: TextDecoration.none,
+                              letterSpacing: 1.3,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 25,
-                        color: Colors.grey,
-                        offset: Offset(5, 10),
-                      )
-                    ],
+                  );
+                })
+            : const Center(
+                child: Text(
+                  'No Notes created yet !',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        currentNote.title!,
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.black.withOpacity(0.7),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentNote.content!,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey[800],
-                          decoration: TextDecoration.none,
-                          letterSpacing: 1.3,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-        ),
-      ),
+                ),
+              ),
+      )),
     );
   }
 }

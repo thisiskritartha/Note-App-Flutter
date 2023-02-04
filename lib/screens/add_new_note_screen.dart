@@ -6,24 +6,48 @@ import '../controller/note_controller.dart';
 import '../models/model.dart';
 
 class AddNewNoteScreen extends StatelessWidget {
-  AddNewNoteScreen({Key? key}) : super(key: key);
+  AddNewNoteScreen({Key? key, required this.isUpdate, this.note})
+      : super(key: key);
+  bool isUpdate;
+  final Note? note;
   final controller = Get.put(NoteController());
 
   @override
   Widget build(BuildContext context) {
+    if (isUpdate) {
+      controller.textEditingTitleController.text = note!.title!;
+      controller.textEditingContentController.text = note!.content!;
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            FocusManager.instance.primaryFocus!.unfocus();
+            controller.textEditingContentController.clear();
+            controller.textEditingTitleController.clear();
+            Get.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ),
+        ),
         actions: [
           IconButton(
               onPressed: () {
-                controller.addNote(Note(
-                  id: const Uuid().v1(),
-                  email: 'krit@gmail.com',
-                  title: controller.textEditingTitleController.text,
-                  content: controller.textEditingContentController.text,
-                  dateAdded: DateTime.now(),
-                ));
+                if (isUpdate) {
+                  note!.title = controller.textEditingTitleController.text;
+                  note!.content = controller.textEditingContentController.text;
+                  controller.updateNote(note!);
+                } else {
+                  controller.addNote(Note(
+                    id: const Uuid().v1(),
+                    email: 'krit@gmail.com',
+                    title: controller.textEditingTitleController.text,
+                    content: controller.textEditingContentController.text,
+                    dateAdded: DateTime.now(),
+                  ));
+                }
                 FocusManager.instance.primaryFocus!.unfocus();
                 controller.textEditingContentController.clear();
                 controller.textEditingTitleController.clear();
@@ -43,7 +67,7 @@ class AddNewNoteScreen extends StatelessWidget {
           children: [
             TextField(
               controller: controller.textEditingTitleController,
-              autofocus: true,
+              autofocus: isUpdate ? false : true,
               onSubmitted: (val) {
                 if (val != '') {
                   controller.noteFocus.requestFocus();

@@ -9,12 +9,29 @@ class NoteController extends GetxController {
   FocusNode noteFocus = FocusNode();
   RxList notes = [].obs;
 
-  void addNote(Note note) {
-    notes.add(note);
-    refresh();
+  @override
+  void onClose() {
+    textEditingTitleController.dispose();
+    textEditingContentController.dispose();
+    super.onClose();
   }
 
-  void updateNote() {}
+  void addNote(Note note) {
+    notes.add(note);
+    notes.refresh();
+  }
 
-  void deleteNote() {}
+  void updateNote(Note note) {
+    int index =
+        notes.indexOf(notes.firstWhere((element) => element.id == note.id));
+    notes[index] = note;
+    notes.refresh();
+  }
+
+  void deleteNote(Note note) {
+    int index =
+        notes.indexOf(notes.firstWhere((element) => element.id == note.id));
+    notes.removeAt(index);
+    notes.refresh();
+  }
 }
