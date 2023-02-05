@@ -12,6 +12,8 @@ class NoteController extends GetxController {
   final isLoading = true.obs;
   final notes = <Note>[].obs;
 
+  final searchQuery = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -23,6 +25,16 @@ class NoteController extends GetxController {
     textEditingTitleController.dispose();
     textEditingContentController.dispose();
     super.onClose();
+  }
+
+  List<Note> getFilteredNotes() {
+    return notes
+        .where(
+          (el) =>
+              el.title!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+              el.content!.toLowerCase().contains(searchQuery.toLowerCase()),
+        )
+        .toList();
   }
 
   void sortNote() {

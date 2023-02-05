@@ -43,81 +43,123 @@ class HomeScreen extends StatelessWidget {
         () => controller.isLoading.value == false
             ? SafeArea(
                 child: controller.notes.value.isNotEmpty
-                    ? GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
-                        itemCount: controller.notes.length,
-                        itemBuilder: (context, index) {
-                          Note currentNote = controller.notes[index];
-                          return GestureDetector(
-                            onTap: () {
-                              //TODO: FOR UPDATE
-                              Get.to(() => AddNewNoteScreen(
-                                    isUpdate: true,
-                                    note: currentNote,
-                                  ));
-                            },
-                            onLongPress: () {
-                              controller.deleteNote(currentNote);
-                              Get.snackbar(
-                                'NOTE DELETE',
-                                'Success!',
-                                snackPosition: SnackPosition.BOTTOM,
-                                colorText: Colors.white,
-                                backgroundColor: Colors.blue,
-                              );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(8),
-                              padding: const EdgeInsets.only(left: 10, top: 15),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 25,
-                                    color: Colors.grey,
-                                    offset: Offset(5, 10),
-                                  )
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    currentNote.title!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      color: Colors.black.withOpacity(0.7),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    currentNote.content!,
-                                    maxLines: 7,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey[800],
-                                      decoration: TextDecoration.none,
-                                      letterSpacing: 1.3,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                ],
+                    ? ListView(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10.0,
+                              right: 10.0,
+                              bottom: 15,
+                            ),
+                            child: TextField(
+                              onChanged: (value) {
+                                controller.searchQuery.value = value;
+                              },
+                              decoration: const InputDecoration(
+                                hintText: 'Search',
                               ),
                             ),
-                          );
-                        })
+                          ),
+                          controller.getFilteredNotes().isNotEmpty
+                              ? GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                  ),
+                                  itemCount:
+                                      controller.getFilteredNotes().length,
+                                  itemBuilder: (context, index) {
+                                    Note currentNote =
+                                        controller.getFilteredNotes()[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        //TODO: FOR UPDATE
+                                        Get.to(
+                                          () => AddNewNoteScreen(
+                                            isUpdate: true,
+                                            note: currentNote,
+                                          ),
+                                        );
+                                      },
+                                      onLongPress: () {
+                                        controller.deleteNote(currentNote);
+                                        Get.snackbar(
+                                          'NOTE DELETE',
+                                          'Success!',
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          colorText: Colors.white,
+                                          backgroundColor: Colors.blue,
+                                        );
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.all(8),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, top: 15),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              blurRadius: 25,
+                                              color: Colors.grey,
+                                              offset: Offset(5, 10),
+                                            )
+                                          ],
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              currentNote.title!,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 25,
+                                                color: Colors.black
+                                                    .withOpacity(0.7),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              currentNote.content!,
+                                              maxLines: 7,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.grey[800],
+                                                decoration: TextDecoration.none,
+                                                letterSpacing: 1.3,
+                                                fontStyle: FontStyle.italic,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  })
+                              : const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Center(
+                                    child: Text(
+                                      'No Note Found with that query.',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      )
                     : Center(
                         child: Column(
                           children: [

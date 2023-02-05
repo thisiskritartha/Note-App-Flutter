@@ -3,7 +3,8 @@ import '../models/model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static String baseUrl = 'http://95fd-202-51-76-39.ngrok.io';
+  //Generated using ngrok
+  static String baseUrl = 'http://7d9e-103-10-28-240.ngrok.io';
 
   static Future<void> add(Note note) async {
     Uri requestUri = Uri.parse('$baseUrl/create-note');
