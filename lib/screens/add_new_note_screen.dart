@@ -38,6 +38,7 @@ class AddNewNoteScreen extends StatelessWidget {
                 if (isUpdate) {
                   note!.title = controller.textEditingTitleController.text;
                   note!.content = controller.textEditingContentController.text;
+                  note!.dateAdded = DateTime.now();
                   controller.updateNote(note!);
                 } else {
                   controller.addNote(Note(
