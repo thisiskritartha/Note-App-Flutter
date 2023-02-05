@@ -47,6 +47,7 @@ class AddNewNoteScreen extends StatelessWidget {
                     content: controller.textEditingContentController.text,
                     dateAdded: DateTime.now(),
                   ));
+                  print('${const Uuid().v1().toString()} ....');
                 }
                 FocusManager.instance.primaryFocus!.unfocus();
                 controller.textEditingContentController.clear();

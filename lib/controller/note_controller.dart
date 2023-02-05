@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:notes_app/services/api_services.dart';
 import '../models/model.dart';
 
 class NoteController extends GetxController {
@@ -7,7 +8,15 @@ class NoteController extends GetxController {
   TextEditingController textEditingContentController = TextEditingController();
 
   FocusNode noteFocus = FocusNode();
-  RxList notes = [].obs;
+
+  final isLoading = true.obs;
+  final notes = <Note>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchNote('krit@gmail.com');
+  }
 
   @override
   void onClose() {
@@ -16,22 +25,27 @@ class NoteController extends GetxController {
     super.onClose();
   }
 
-  void addNote(Note note) {
+  void addNote(Note note) async {
     notes.add(note);
-    notes.refresh();
+    await ApiService.add(note);
   }
 
   void updateNote(Note note) {
     int index =
         notes.indexOf(notes.firstWhere((element) => element.id == note.id));
     notes[index] = note;
-    notes.refresh();
+    ApiService.updateNote(note);
   }
 
   void deleteNote(Note note) {
     int index =
         notes.indexOf(notes.firstWhere((element) => element.id == note.id));
     notes.removeAt(index);
-    notes.refresh();
+    ApiService.deleteNote(note);
+  }
+
+  void fetchNote(String email) async {
+    notes.value = await ApiService.fetchNote(email);
+    isLoading.value = false;
   }
 }

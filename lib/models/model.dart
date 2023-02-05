@@ -7,12 +7,14 @@ class Note {
 
   Note({this.id, this.email, this.title, this.content, this.dateAdded});
 
-  Note.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
-    title = json['title'];
-    content = json['content'];
-    dateAdded = DateTime.parse(json['dateAdded']);
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(
+      id: json['id'],
+      email: json['email'],
+      title: json['title'],
+      content: json['content'],
+      dateAdded: DateTime.tryParse(json['dateAdded']),
+    );
   }
 
   Map<String, dynamic> toJson() {
