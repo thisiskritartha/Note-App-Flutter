@@ -35,7 +35,7 @@ class ApiService {
     List<Note> notes = [];
     for (Map<String, dynamic> note in decoded['data']['note']) {
       var fetchedNote = Note.fromJson(note);
-      notes.add(fetchedNote);
+      notes.insert(0, fetchedNote);
     }
     return notes;
   }

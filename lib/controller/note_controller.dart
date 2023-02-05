@@ -25,8 +25,13 @@ class NoteController extends GetxController {
     super.onClose();
   }
 
+  void sortNote() {
+    notes.value.sort((a, b) => b.dateAdded!.compareTo(a.dateAdded!));
+  }
+
   void addNote(Note note) async {
     notes.add(note);
+    sortNote();
     await ApiService.add(note);
   }
 
@@ -34,6 +39,7 @@ class NoteController extends GetxController {
     int index =
         notes.indexOf(notes.firstWhere((element) => element.id == note.id));
     notes[index] = note;
+    sortNote();
     ApiService.updateNote(note);
   }
 
@@ -46,6 +52,7 @@ class NoteController extends GetxController {
 
   void fetchNote(String email) async {
     notes.value = await ApiService.fetchNote(email);
+    sortNote();
     isLoading.value = false;
   }
 }
